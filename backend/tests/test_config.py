@@ -4,6 +4,8 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from pydantic import ValidationError
+
 from app.core.config import REPOSITORY_ROOT, Settings
 
 
@@ -18,6 +20,26 @@ class SettingsTests(unittest.TestCase):
             settings = Settings(_env_file=None)
         self.assertEqual(settings.APP_NAME, "PubMed Literature Intelligence")
         self.assertEqual(settings.APP_ENV, "development")
+        self.assertIsNone(settings.PUBMED_API_KEY)
+        self.assertIsNone(settings.NCBI_EMAIL)
+        self.assertEqual(settings.PUBMED_FETCH_LIMIT, 200)
+        self.assertEqual(settings.PUBMED_BATCH_SIZE, 100)
+        self.assertEqual(settings.PUBMED_TIMEOUT_SECONDS, 20)
+
+    def test_pubmed_limits_are_validated(self):
+        for values in (
+            {"PUBMED_FETCH_LIMIT": 0},
+            {"PUBMED_FETCH_LIMIT": 10001},
+            {"PUBMED_BATCH_SIZE": 0},
+            {"PUBMED_BATCH_SIZE": 201},
+            {"PUBMED_TIMEOUT_SECONDS": 0},
+        ):
+            with self.subTest(values=values), self.assertRaises(ValidationError):
+                Settings(_env_file=None, **values)
+
+    def test_api_key_is_not_in_settings_repr(self):
+        settings = Settings(_env_file=None, PUBMED_API_KEY="test-placeholder")
+        self.assertNotIn("test-placeholder", repr(settings))
 
     def test_dotenv_loading_and_environment_precedence(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE PubmedArticleSet PUBLIC "-//NLM//DTD PubMedArticle, 1st January 2024//EN" "https://dtd.nlm.nih.gov/ncbi/pubmed/out/pubmed_240101.dtd">
+<!-- Synthetic articles with realistic PubMed structure; no live requests needed. -->
+<PubmedArticleSet>
+  <PubmedArticle>
+    <MedlineCitation Status="MEDLINE">
+      <PMID Version="1">39000001</PMID>
+      <Article PubModel="Print-Electronic">
+        <Journal>
+          <ISSN IssnType="Electronic">1234-5678</ISSN>
+          <JournalIssue CitedMedium="Internet"><PubDate><Year>2024</Year><Month>Oct</Month></PubDate></JournalIssue>
+          <Title>Journal of Clinical Research</Title>
+        </Journal>
+        <ArticleTitle>Immune <i>checkpoint</i> blockade in <sup>advanced</sup> lung cancer.</ArticleTitle>
+        <Abstract>
+          <AbstractText Label="INTRODUCTION" NlmCategory="BACKGROUND">Immunotherapy is evolving.</AbstractText>
+          <AbstractText Label="METHODS" NlmCategory="METHODS">We studied <i>n</i> = 20 patients.</AbstractText>
+          <AbstractText Label="RESULTS" NlmCategory="RESULTS">Response improved (<i>p</i> &lt; 0.05).</AbstractText>
+          <AbstractText Label="CONCLUSION" NlmCategory="CONCLUSIONS">Further studies are needed.</AbstractText>
+        </Abstract>
+        <AuthorList CompleteYN="Y">
+          <Author ValidYN="Y"><LastName>Meirson</LastName><ForeName>Tomer</ForeName><Initials>T</Initials></Author>
+          <Author ValidYN="Y"><CollectiveName>Lung Cancer Study Group</CollectiveName></Author>
+          <Author ValidYN="Y"><LastName>OnlyLastName</LastName></Author>
+          <Author ValidYN="Y"><LastName>Smith</LastName><Initials>A</Initials></Author>
+          <Author ValidYN="Y"><ForeName>OnlyFirstName</ForeName></Author>
+          <Author ValidYN="Y" />
+        </AuthorList>
+        <ArticleDate DateType="Electronic"><Year>2023</Year><Month>12</Month><Day>1</Day></ArticleDate>
+      </Article>
+      <MeshHeadingList>
+        <MeshHeading><DescriptorName UI="D008175" MajorTopicYN="Y">Lung Neoplasms</DescriptorName><QualifierName>therapy</QualifierName></MeshHeading>
+        <MeshHeading><DescriptorName UI="D007167" MajorTopicYN="N">Immunotherapy</DescriptorName></MeshHeading>
+      </MeshHeadingList>
+    </MedlineCitation>
+  </PubmedArticle>
+  <PubmedArticle>
+    <MedlineCitation><PMID>39000002</PMID><Article><ArticleTitle>A report without optional metadata.</ArticleTitle></Article></MedlineCitation>
+  </PubmedArticle>
+  <PubmedArticle>
+    <MedlineCitation>
+      <PMID>39000003</PMID>
+      <Article>
+        <Journal><JournalIssue><PubDate><MedlineDate>2021 Dec-2022 Jan</MedlineDate></PubDate></JournalIssue><Title>Clinical Research</Title></Journal>
+        <ArticleTitle>A seasonal publication.</ArticleTitle>
+        <Abstract><AbstractText>Unlabelled text with <b>nested emphasis</b>.</AbstractText></Abstract>
+      </Article>
+    </MedlineCitation>
+  </PubmedArticle>
+  <PubmedArticle>
+    <MedlineCitation>
+      <PMID>39000004</PMID>
+      <Article><ArticleTitle>Electronic publication date fallback.</ArticleTitle><ArticleDate DateType="Electronic"><Year>2020</Year></ArticleDate></Article>
+    </MedlineCitation>
+  </PubmedArticle>
+  <PubmedArticle><MedlineCitation><PMID>39000005</PMID><Article><ArticleTitle /></Article></MedlineCitation></PubmedArticle>
+  <PubmedArticle><MedlineCitation><Article><ArticleTitle>No PMID.</ArticleTitle></Article></MedlineCitation></PubmedArticle>
+  <PubmedArticle />
+</PubmedArticleSet>
