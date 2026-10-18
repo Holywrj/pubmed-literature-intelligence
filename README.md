@@ -4,9 +4,10 @@ A web demo for biomedical literature search and AI-assisted research analysis.
 
 ## Current Status
 
-**Phase 2 / PubMed search backend.** The backend supports PubMed keyword search
-and article metadata retrieval. The frontend remains a static landing screen.
-Analytics, visualizations, journal metrics, and AI capabilities are planned only.
+**Phase 3 / deterministic literature analysis.** The backend supports PubMed
+search, article metadata retrieval, deterministic statistics, and optional local
+journal metrics enrichment. The frontend remains a static landing screen.
+Visualizations, external metrics API integration, and AI review are planned only.
 
 ## Tech Stack
 
@@ -57,6 +58,32 @@ returned. Queries are trimmed, must not be blank, and are limited to 500 charact
 Invalid queries return 422; upstream failures return a safe 503 error.
 See [data sources and limitations](docs/data-sources.md).
 
+Analyze previously retrieved articles without calling PubMed again:
+
+```sh
+curl -X POST http://localhost:8000/api/analysis \
+  -H 'Content-Type: application/json' \
+  -d '{"articles":[{"pmid":"sample-1","title":"Sample article","publication_year":2025}]}'
+```
+
+Send the `articles` array from `/api/search`. Optionally include its `total_count`
+to preserve the original PubMed match count; without it, analysis `total_count`
+defaults to the input length. `analyzed_count` always equals the input length.
+Statistics describe this submitted sample, not all PubMed matches.
+
+The response includes year/journal distributions, the recent five-year count,
+top 30 MeSH terms, metric coverage, category-specific metric records, an
+article-level best-quartile distribution, and at most 100 recent articles ranked
+by the publishing journal's JIF. This is not an article-level impact factor.
+The response exposes the runtime `current_year` and `recent_five_year_start`.
+
+Optional metrics are read from `data/journal_metrics.csv` (ignored by Git).
+Missing data is returned as unavailable; the application runs without the file.
+See `data/journal_metrics.example.csv` for the format. Its journals and quartiles
+are explicitly synthetic and its JIF values are blank. It is not loaded by default
+and must not be presented as real JCR data. Supply only legitimately obtained
+metrics. See [analysis rules and metric provenance](docs/data-sources.md).
+
 Frontend, in another terminal from the repository root:
 
 ```sh
@@ -95,6 +122,9 @@ location. Process environment variables take precedence over `.env` values.
 - `PUBMED_FETCH_LIMIT`: maximum candidate IDs (default 200; range 1–10000).
 - `PUBMED_BATCH_SIZE`: IDs per sequential EFetch request (default 100; range 1–200).
 - `PUBMED_TIMEOUT_SECONDS`: positive timeout per HTTP request; defaults to 20.
+- `JOURNAL_METRICS_CSV_PATH`: optional local metrics file; defaults to
+  repository-root `data/journal_metrics.csv`. Relative overrides are also resolved
+  against the repository root, including when starting from `backend/`.
 - `DEEPSEEK_API_KEY`, `DEEPSEEK_BASE_URL`, `DEEPSEEK_MODEL`: unused future placeholders.
 
 The application starts without `.env` or any API keys. `.env` is ignored by Git;
@@ -102,8 +132,6 @@ commit only the secret-free `.env.example`. Do not put secrets in frontend files
 
 ## Planned Capabilities
 
-- Literature statistics
 - Research trend visualization
-- Journal metrics integration
-- High-impact literature ranking
+- Licensed journal metrics API integration
 - AI-assisted Chinese literature review

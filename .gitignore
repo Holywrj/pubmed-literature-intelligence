@@ -11,6 +11,9 @@ __pycache__/
 .env.*
 !.env.example
 
+# Optional local journal metrics data
+/data/journal_metrics.csv
+
 # Frontend
 node_modules/
 dist/
