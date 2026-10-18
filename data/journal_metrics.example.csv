@@ -1,0 +1,4 @@
+journal_name,issn,metric_year,jif,jcr_quartile,category,source
+Synthetic Example Journal A (NOT REAL),0000-0000,2025,,Q1,Synthetic Category A,Synthetic template only - not JCR data
+Synthetic Example Journal A (NOT REAL),0000-0000,2025,,Q3,Synthetic Category B,Synthetic template only - not JCR data
+Synthetic Example Journal B (NOT REAL),1111-1111,2025,,,,Synthetic template only - not JCR data

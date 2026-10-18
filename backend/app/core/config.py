@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -24,6 +24,14 @@ class Settings(BaseSettings):
     PUBMED_FETCH_LIMIT: int = Field(default=200, ge=1, le=10000)
     PUBMED_BATCH_SIZE: int = Field(default=100, ge=1, le=200)
     PUBMED_TIMEOUT_SECONDS: float = Field(default=20, gt=0)
+
+    JOURNAL_METRICS_CSV_PATH: Path = REPOSITORY_ROOT / "data/journal_metrics.csv"
+
+    @field_validator("JOURNAL_METRICS_CSV_PATH")
+    @classmethod
+    def resolve_metrics_path(cls, value: Path) -> Path:
+        path = value.expanduser()
+        return (path if path.is_absolute() else REPOSITORY_ROOT / path).resolve()
 
 
 settings = Settings()

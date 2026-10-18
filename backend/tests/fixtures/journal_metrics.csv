@@ -1,0 +1,11 @@
+journal_name,issn,metric_year,jif,jcr_quartile,category,source
+Synthetic Alpha,0000-000X,2025,8,Q2,Synthetic Category A,synthetic test data - not real JCR
+Synthetic Alpha,0000-000X,2025,8,Q1,Synthetic Category B,synthetic test data - not real JCR
+Synthetic Alpha,0000-000X,2024,99,Q1,Synthetic Category A,synthetic test data - not real JCR
+Synthetic Beta,1111-1111,2025,8,Q3,Synthetic Category A,synthetic test data - not real JCR
+Synthetic Gamma,2222-2222,2025,2,Q4,Synthetic Category A,synthetic test data - not real JCR
+Synthetic Quartile Only,3333-3333,2025,,Q2,Synthetic Category A,synthetic test data - not real JCR
+Synthetic Unknown,4444-4444,2025,,,,synthetic test data - not real JCR
+Synthetic Zero,5555-5555,2025,0,,,synthetic test data - not real JCR
+Synthetic Latest Missing,6666-6666,2024,12,Q1,Synthetic Category A,synthetic test data - not real JCR
+Synthetic Latest Missing,6666-6666,2025,,,,synthetic test data - not real JCR
