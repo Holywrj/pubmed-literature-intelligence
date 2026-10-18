@@ -1,0 +1,10 @@
+{
+  "header": {"type": "esearch", "version": "0.3"},
+  "esearchresult": {
+    "count": "30934",
+    "retmax": "4",
+    "retstart": "0",
+    "idlist": ["39000001", "39000002", "39000003", "39000004"],
+    "querytranslation": "lung cancer immunotherapy"
+  }
+}
