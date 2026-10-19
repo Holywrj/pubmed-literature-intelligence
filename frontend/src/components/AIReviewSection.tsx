@@ -22,10 +22,10 @@ export function AIReviewSection({ canGenerate, hasSearch, loading, error, review
     <div className="ai-panel">
       <div className="ai-symbol" aria-hidden="true">✳</div>
       <div className="ai-copy">
-        <div className="ai-heading"><h2 id="ai-title">AI 研究综述</h2><span className="ai-badge">基于文献证据生成</span></div>
+        <div className="ai-heading"><h2 id="ai-title">AI 研究综述</h2><span className="ai-badge">基于 PubMed 文献证据生成</span></div>
         <p id="ai-description">{!hasSearch ? '请先检索 PubMed 文献，再生成基于文献证据的 AI 综述。'
-          : '基于当前检索到的 Abstract，生成研究方向总结与中文文献综述。'}</p>
-        <p>仅在点击生成时调用 AI，不会在检索时自动生成。</p>
+          : '结合当前检索文献的 Abstract，提炼主要研究方向并生成中文领域综述。'}</p>
+        <p>仅在点击生成时调用 AI。</p>
       </div>
       <button type="button" disabled={!canGenerate || loading} aria-busy={loading} aria-describedby="ai-description" onClick={onGenerate} className="ai-button">
         {loading ? '生成中…' : '生成 AI 综述'} <span aria-hidden="true">↗</span>
