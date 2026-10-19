@@ -12,8 +12,8 @@ export function JournalChart({ journals }: { journals: JournalCount[] }) {
           <BarChart data={data} layout="vertical" margin={{ top: 0, right: 26, left: 0, bottom: 0 }} accessibilityLayer>
             <XAxis type="number" hide domain={[0, 'dataMax']} allowDecimals={false} />
             <YAxis type="category" dataKey="journal" hide />
-            <Tooltip cursor={{ fill: '#f2f6f4' }} />
-            <Bar dataKey="count" name="文献" fill="#43988b" radius={[0, 4, 4, 0]} barSize={11} isAnimationActive={false} label={{ position: 'right', fontSize: 11, fill: '#4f6560' }} />
+            <Tooltip cursor={{ fill: 'var(--color-surface-muted)' }} />
+            <Bar dataKey="count" name="文献" fill="var(--color-accent)" radius={[0, 4, 4, 0]} barSize={11} isAnimationActive={false} label={{ position: 'right', fontSize: 11, fill: 'var(--color-text-secondary)' }} />
           </BarChart>
         </ResponsiveContainer></div>
       </div>

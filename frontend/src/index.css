@@ -1,7 +1,28 @@
 :root {
+  --color-bg: #F4F7FA;
+  --color-surface: #FFFFFF;
+  --color-surface-muted: #EEF4F8;
+  --color-surface-subtle: #F8FAFC;
+  --color-primary-deep: #163A5F;
+  --color-primary: #246A9A;
+  --color-primary-bright: #2F80B7;
+  --color-accent: #3A8DA8;
+  --color-accent-muted: #4F798A;
+  --color-slate: #60758A;
+  --color-tint: #EAF3F8;
+  --color-border: #D5E0E8;
+  --color-border-strong: #BCCDD9;
+  --color-text: #1F2F3A;
+  --color-text-secondary: #5D707E;
+  --color-text-muted: #5D6F7E;
+  --color-text-faint: #788895;
+  --color-focus: #3E94CF;
+  --color-chart-fill: #DCEBF4;
+  --color-chart-unknown: #94A8B8;
+  --color-selection: #D6EAF7;
   font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #223c36;
-  background: #f6f8f6;
+  color: var(--color-text);
+  background: var(--color-bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -16,11 +37,11 @@ button, input { font: inherit; }
 button, a, input { -webkit-tap-highlight-color: transparent; }
 button { cursor: pointer; }
 button:disabled { cursor: not-allowed; }
-button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visible, [tabindex]:focus-visible { outline: 3px solid #c76f35; outline-offset: 4px; }
+button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 4px; }
 button, input { border-radius: 0; }
-a { color: #146e63; }
+a { color: var(--color-primary); }
 h1, h2, h3, h4, p { margin: 0; }
-::selection { background: #cde8df; color: #153e34; }
+::selection { background: var(--color-selection); color: var(--color-primary-deep); }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 [hidden] { display: none !important; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
