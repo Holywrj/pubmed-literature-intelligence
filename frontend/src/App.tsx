@@ -1,10 +1,11 @@
-import { lazy, Suspense, useState } from 'react'
-import { analyzeLiterature, searchLiterature } from './api/literature'
+import { lazy, Suspense, useRef, useState } from 'react'
+import { analyzeLiterature, generateAIReview, searchLiterature } from './api/literature'
+import { AIReviewSection } from './components/AIReviewSection'
 import { MetricsCoverage } from './components/MetricsCoverage'
 import { SearchBar } from './components/SearchBar'
 import { StatCard } from './components/StatCard'
 import { TopArticles } from './components/TopArticles'
-import type { AnalysisResponse, SearchResponse } from './types/api'
+import type { AIReviewResponse, AnalysisResponse, SearchResponse } from './types/api'
 import './App.css'
 
 const AnalyticsGrid = lazy(() => import('./components/AnalyticsGrid'))
@@ -20,10 +21,39 @@ function App() {
   const [error, setError] = useState('')
   const [analysisError, setAnalysisError] = useState('')
   const [submittedQuery, setSubmittedQuery] = useState('')
+  const [aiReview, setAIReview] = useState<AIReviewResponse | null>(null)
+  const [aiError, setAIError] = useState('')
+  const [aiLoading, setAILoading] = useState(false)
+  const aiRequest = useRef<AbortController | null>(null)
   const loading = stage !== 'idle'
+
+  async function handleAIReview() {
+    if (!search?.articles.length || loading || aiRequest.current) return
+    const controller = new AbortController()
+    aiRequest.current = controller
+    setAILoading(true)
+    setAIError('')
+    setAIReview(null)
+    try {
+      const review = await generateAIReview(search.query, search.articles, controller.signal)
+      if (aiRequest.current === controller) setAIReview(review)
+    } catch (failure) {
+      if (aiRequest.current === controller) setAIError(message(failure))
+    } finally {
+      if (aiRequest.current === controller) {
+        aiRequest.current = null
+        setAILoading(false)
+      }
+    }
+  }
 
   async function handleSearch(query: string) {
     if (loading || !query.trim()) return
+    aiRequest.current?.abort()
+    aiRequest.current = null
+    setAIReview(null)
+    setAIError('')
+    setAILoading(false)
     setSubmittedQuery(query.trim())
     setError('')
     setAnalysisError('')
@@ -97,9 +127,9 @@ function App() {
           <div className="welcome-note"><span className="status-dot" />Live data, transparent analysis. No sample results are shown.</div>
         </section>}
 
-        <section className="ai-panel" aria-labelledby="ai-title"><div className="ai-symbol" aria-hidden="true">✳</div><div className="ai-copy"><div className="ai-heading"><h2 id="ai-title">AI Research Review</h2><span className="coming-badge">NEXT PHASE</span></div><p>AI-assisted research direction synthesis and Chinese literature review will be available in the next phase.</p></div><button type="button" disabled className="ai-button">Generate AI Review <span aria-hidden="true">↗</span></button></section>
+        <AIReviewSection canGenerate={!!search?.articles.length && !loading} hasSearch={!!search} loading={aiLoading} error={aiError} review={aiReview} onGenerate={handleAIReview} />
 
-        <footer className="site-footer"><span className="footer-brand">PUBMED LITERATURE INTELLIGENCE</span><p>This tool supports literature exploration and research analysis. It is not intended for medical diagnosis or treatment decisions.</p><p>Journal metrics may be unavailable unless a legitimate metrics data source is configured.</p><span className="footer-note">PubMed metadata · Deterministic analysis · AI review not yet available</span></footer>
+        <footer className="site-footer"><span className="footer-brand">PUBMED LITERATURE INTELLIGENCE</span><p>This tool supports literature exploration and research analysis. It is not intended for medical diagnosis or treatment decisions.</p><p>Journal metrics may be unavailable unless a legitimate metrics data source is configured.</p><span className="footer-note">PubMed metadata · Deterministic analysis · Optional AI research review</span></footer>
       </main>
     </>
   )
