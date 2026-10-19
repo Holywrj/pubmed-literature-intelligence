@@ -1,4 +1,4 @@
-import type { AnalysisResponse, PubMedArticle, SearchResponse } from '../types/api'
+import type { AIReviewResponse, AnalysisResponse, PubMedArticle, SearchResponse } from '../types/api'
 
 function detailMessage(body: unknown): string | undefined {
   if (typeof body !== 'object' || body === null || !('detail' in body)) return
@@ -15,8 +15,11 @@ function detailMessage(body: unknown): string | undefined {
   }
 }
 
-async function post<T>(path: string, body: unknown): Promise<T> {
+async function post<T>(path: string, body: unknown, signal?: AbortSignal): Promise<T> {
   const controller = new AbortController()
+  const abort = () => controller.abort()
+  signal?.addEventListener('abort', abort, { once: true })
+  if (signal?.aborted) controller.abort()
   const timeout = window.setTimeout(() => controller.abort(), 90_000)
   try {
     const response = await fetch(path, {
@@ -29,7 +32,9 @@ async function post<T>(path: string, body: unknown): Promise<T> {
     if (!response.ok) {
       throw new Error(detailMessage(payload) ?? (
         response.status === 503
-          ? 'PubMed is temporarily unavailable. Please try again later.'
+          ? path === '/api/ai-review'
+            ? 'AI review service is temporarily unavailable. Please try again.'
+            : 'PubMed is temporarily unavailable. Please try again later.'
           : `The request could not be completed (HTTP ${response.status}). Please try again.`
       ))
     }
@@ -43,6 +48,7 @@ async function post<T>(path: string, body: unknown): Promise<T> {
     throw error
   } finally {
     window.clearTimeout(timeout)
+    signal?.removeEventListener('abort', abort)
   }
 }
 
@@ -52,4 +58,8 @@ export function searchLiterature(query: string): Promise<SearchResponse> {
 
 export function analyzeLiterature(articles: PubMedArticle[], totalCount: number): Promise<AnalysisResponse> {
   return post('/api/analysis', { articles, total_count: totalCount })
+}
+
+export function generateAIReview(query: string, articles: PubMedArticle[], signal?: AbortSignal): Promise<AIReviewResponse> {
+  return post('/api/ai-review', { query, articles }, signal)
 }

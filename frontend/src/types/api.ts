@@ -16,6 +16,21 @@ export interface SearchResponse {
   articles: PubMedArticle[]
 }
 
+export interface ResearchDirection {
+  title: string
+  summary: string
+  evidence_pmids: string[]
+}
+
+export interface AIReviewResponse {
+  query: string
+  source_article_count: number
+  used_article_count: number
+  research_directions: ResearchDirection[]
+  review_points: string[]
+  evidence_pmids: string[]
+}
+
 export interface JournalCount { journal: string; count: number }
 export interface MeshTermFrequency { term: string; frequency: number }
 export type Quartile = 'Q1' | 'Q2' | 'Q3' | 'Q4'
