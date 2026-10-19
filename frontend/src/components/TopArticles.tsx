@@ -64,6 +64,18 @@ export function TopArticles({ ranked, retrieved, yearStart, yearEnd }: {
       </table></div>}
     {totalPages > 1 && <nav className="article-pagination" aria-label="文献分页">
       <button type="button" aria-label="上一页文献" disabled={page === 1} onClick={() => changePage(page - 1)}>上一页</button>
+      <div className="article-page-numbers" role="group" aria-label="选择文献页码">
+        {Array.from({ length: totalPages }, (_, index) => index + 1).map(pageNumber =>
+          <button
+            key={pageNumber}
+            type="button"
+            className="article-page-number"
+            aria-label={`第 ${pageNumber} 页`}
+            aria-current={pageNumber === page ? 'page' : undefined}
+            onClick={() => changePage(pageNumber)}
+          >{pageNumber}</button>
+        )}
+      </div>
       <p role="status" aria-live="polite" aria-atomic="true">第 {page} / {totalPages} 页 · 共 {rows.length} 篇</p>
       <button type="button" aria-label="下一页文献" disabled={page === totalPages} onClick={() => changePage(page + 1)}>下一页</button>
     </nav>}
