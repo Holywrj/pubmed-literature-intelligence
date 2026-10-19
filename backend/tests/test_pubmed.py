@@ -192,6 +192,7 @@ class ClientTests(unittest.IsolatedAsyncioTestCase):
             self.assertNotIn("email", request.url.params)
             if request.url.path.endswith("/esearch.fcgi"):
                 self.assertEqual(request.url.params["retmax"], "200")
+                self.assertEqual(request.url.params["sort"], "relevance")
                 self.assertEqual(request.url.params["retmode"], "json")
                 return httpx.Response(200, json={"esearchresult": {"count": "9999", "idlist": ids}})
             self.assertEqual(request.url.params["retmode"], "xml")
@@ -218,6 +219,7 @@ class ClientTests(unittest.IsolatedAsyncioTestCase):
             transport=httpx.MockTransport(handler),
         ).search("lung cancer", limit=2)
         self.assertEqual(requests[0].url.params["retmax"], "2")
+        self.assertEqual(requests[0].url.params["sort"], "relevance")
         self.assertEqual(requests[1].url.params["id"], "39000001,39000002")
         self.assertEqual(result.returned_count, 2)
 
