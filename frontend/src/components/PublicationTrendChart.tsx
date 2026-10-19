@@ -8,11 +8,11 @@ export function PublicationTrendChart({ distribution }: { distribution: Record<s
       <div className="chart-surface">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 15, right: 12, bottom: 0, left: -15 }} accessibilityLayer>
-            <CartesianGrid vertical={false} stroke="#e7ecea" strokeDasharray="3 4" />
-            <XAxis dataKey="year" tickLine={false} axisLine={false} minTickGap={22} tick={{ fontSize: 11, fill: '#637471' }} />
-            <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#637471' }} />
+            <CartesianGrid vertical={false} stroke="var(--color-border)" strokeDasharray="3 4" />
+            <XAxis dataKey="year" tickLine={false} axisLine={false} minTickGap={22} tick={{ fontSize: 11, fill: 'var(--color-text-secondary)' }} />
+            <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: 'var(--color-text-secondary)' }} />
             <Tooltip labelFormatter={label => `发表年份：${label}`} />
-            <Area type="linear" dataKey="count" name="文献" stroke="#16766b" strokeWidth={2.5} fill="#dceee7" isAnimationActive={false} dot={data.length === 1} />
+            <Area type="linear" dataKey="count" name="文献" stroke="var(--color-primary)" strokeWidth={2.5} fill="var(--color-chart-fill)" isAnimationActive={false} dot={data.length === 1} />
           </AreaChart>
         </ResponsiveContainer>
       </div>

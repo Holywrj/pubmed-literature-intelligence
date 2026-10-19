@@ -1,4 +1,5 @@
 import { Fragment, useId, useState } from 'react'
+import type { FormEvent } from 'react'
 import type { ArticleJournalMetrics, PubMedArticle, RankedArticle } from '../types/api'
 
 type ArticleRow = { article: PubMedArticle; journal_metrics?: ArticleJournalMetrics }
@@ -9,6 +10,7 @@ export function TopArticles({ ranked, retrieved, yearStart, yearEnd }: {
 }) {
   const [expanded, setExpanded] = useState<number | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
+  const [pageInput, setPageInput] = useState('1')
   const dataset = ranked ?? retrieved
   const [previousDataset, setPreviousDataset] = useState(dataset)
   const id = useId()
@@ -23,12 +25,25 @@ export function TopArticles({ ranked, retrieved, yearStart, yearEnd }: {
   if (previousDataset !== dataset) {
     setPreviousDataset(dataset)
     setCurrentPage(1)
+    setPageInput('1')
     setExpanded(null)
   }
 
   function changePage(nextPage: number) {
+    const targetPage = Math.max(1, Math.min(nextPage, totalPages))
     setExpanded(null)
-    setCurrentPage(Math.max(1, Math.min(nextPage, totalPages)))
+    setCurrentPage(targetPage)
+    setPageInput(String(targetPage))
+  }
+
+  function jumpToPage(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const targetPage = Number(pageInput)
+    if (!pageInput.trim() || !Number.isFinite(targetPage) || !Number.isInteger(targetPage)) {
+      setPageInput(String(page))
+      return
+    }
+    changePage(targetPage)
   }
 
   return <section className="panel articles-panel" aria-labelledby={`${id}-title`}>
@@ -63,21 +78,23 @@ export function TopArticles({ ranked, retrieved, yearStart, yearEnd }: {
         </Fragment>})}</tbody>
       </table></div>}
     {totalPages > 1 && <nav className="article-pagination" aria-label="文献分页">
-      <button type="button" aria-label="上一页文献" disabled={page === 1} onClick={() => changePage(page - 1)}>上一页</button>
-      <div className="article-page-numbers" role="group" aria-label="选择文献页码">
-        {Array.from({ length: totalPages }, (_, index) => index + 1).map(pageNumber =>
-          <button
-            key={pageNumber}
-            type="button"
-            className="article-page-number"
-            aria-label={`第 ${pageNumber} 页`}
-            aria-current={pageNumber === page ? 'page' : undefined}
-            onClick={() => changePage(pageNumber)}
-          >{pageNumber}</button>
-        )}
+      <div className="article-page-controls">
+        <button type="button" aria-label="首页文献" disabled={page === 1} onClick={() => changePage(1)}>首页</button>
+        <button type="button" aria-label="上一页文献" disabled={page === 1} onClick={() => changePage(page - 1)}>上一页</button>
       </div>
-      <p role="status" aria-live="polite" aria-atomic="true">第 {page} / {totalPages} 页 · 共 {rows.length} 篇</p>
-      <button type="button" aria-label="下一页文献" disabled={page === totalPages} onClick={() => changePage(page + 1)}>下一页</button>
+      <form className="article-page-jump" onSubmit={jumpToPage} noValidate>
+        <label htmlFor={`${id}-page`} className="sr-only">文献页码</label>
+        <span>第</span>
+        <input id={`${id}-page`} type="number" min={1} max={totalPages} step={1} value={pageInput}
+          onChange={event => setPageInput(event.target.value)} aria-describedby={`${id}-page-total`} />
+        <span id={`${id}-page-total`}>/ {totalPages} 页</span>
+        <button type="submit" className="article-jump-button">跳转</button>
+      </form>
+      <div className="article-page-controls">
+        <button type="button" aria-label="下一页文献" disabled={page === totalPages} onClick={() => changePage(page + 1)}>下一页</button>
+        <button type="button" aria-label="末页文献" disabled={page === totalPages} onClick={() => changePage(totalPages)}>末页</button>
+      </div>
+      <p className="article-page-summary" role="status" aria-live="polite" aria-atomic="true"><span className="sr-only">第 {page} / {totalPages} 页 · </span>共 {rows.length} 篇</p>
     </nav>}
   </section>
 }

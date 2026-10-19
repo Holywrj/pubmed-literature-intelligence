@@ -1,4 +1,4 @@
-import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import type { JournalMetricsSummary } from '../types/api'
 import { ChartEmpty, ChartPanel } from './ChartPanel'
 
@@ -16,10 +16,12 @@ export function QuartileChart({ metrics }: { metrics: JournalMetricsSummary }) {
         : '当前数据集暂无 JCR Quartile 数据，已有 JIF 数值将在其他位置单独展示。'}</p>}
       <div className="chart-surface quartile-surface"><ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ top: 18, left: -20, right: 8, bottom: 0 }} accessibilityLayer>
-          <XAxis dataKey="quartile" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#637471' }} />
-          <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#637471' }} />
-          <Tooltip cursor={{ fill: '#f2f6f4' }} />
-          <Bar dataKey="count" name="文献" fill={unknownOnly ? '#98aaa4' : '#43988b'} radius={[4, 4, 0, 0]} maxBarSize={45} isAnimationActive={false} />
+          <XAxis dataKey="quartile" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: 'var(--color-text-secondary)' }} />
+          <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: 'var(--color-text-secondary)' }} />
+          <Tooltip cursor={{ fill: 'var(--color-surface-muted)' }} />
+          <Bar dataKey="count" name="文献" radius={[4, 4, 0, 0]} maxBarSize={45} isAnimationActive={false}>
+            {data.map(item => <Cell key={item.quartile} fill={item.quartile === '暂无' ? 'var(--color-chart-unknown)' : 'var(--color-primary)'} />)}
+          </Bar>
         </BarChart>
       </ResponsiveContainer></div>
       <p className="quartile-counts">{data.map(item => <span key={item.quartile}>{item.quartile} <strong>{item.count}</strong></span>)}</p>
