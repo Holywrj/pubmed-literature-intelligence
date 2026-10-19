@@ -114,7 +114,9 @@ Do not claim that all PubMed results were analyzed. Describe only this bounded
 sample. Explicitly acknowledge insufficient or inconsistent evidence and avoid
 causal claims unsupported by the abstracts. Do not provide patient-specific
 diagnosis or treatment recommendations.
-Output Chinese. Give 3–5 research directions describing themes/trends in these
+Output Chinese. Research direction titles and summaries must each contain Chinese
+text; English biomedical terminology and abbreviations may appear within it.
+Give 3–5 research directions describing themes/trends in these
 abstracts, each with a nonblank title, summary, and at least one supporting PMID
 from the actual context. Put citation IDs only in the evidence_pmids fields;
 do not embed PMID citations in prose. Produce approximately 500 Chinese
@@ -175,6 +177,7 @@ class AIReviewService:
                 max_tokens=self.config.AI_REVIEW_MAX_OUTPUT_TOKENS,
                 max_retries=0,
                 use_responses_api=False,
+                extra_body={"thinking": {"type": "disabled"}},
                 verbose=False,
             ).bind(response_format={"type": "json_object"})
             async with asyncio.timeout(self.config.AI_REVIEW_TIMEOUT_SECONDS):

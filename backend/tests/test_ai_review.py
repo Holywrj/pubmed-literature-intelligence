@@ -15,7 +15,7 @@ from pydantic import ValidationError
 from app.api.ai_review import get_ai_review_service
 from app.core.config import Settings
 from app.main import app
-from app.schemas.ai_review import ReviewContent
+from app.schemas.ai_review import ResearchDirection, ReviewContent
 from app.schemas.literature import PubMedArticle
 from app.services.ai_review import (
     AIReviewNotConfigured,
@@ -186,6 +186,28 @@ class OutputTests(unittest.TestCase):
         parsed = ReviewContent.model_validate(output())
         self.assertEqual(validate_evidence(parsed, self.context), ["2", "1"])
 
+    def test_chinese_direction_fields_allow_biomedical_terminology(self):
+        for title, summary in (
+            ("研究主题", "梳理样本文献中的研究方向。"),
+            ("CAR-T 细胞治疗", "EGFR 靶向治疗机制与免疫治疗研究。"),
+        ):
+            with self.subTest(title=title):
+                direction = ResearchDirection(title=title, summary=summary, evidence_pmids=["1"])
+                self.assertEqual(direction.title, title)
+                self.assertEqual(direction.summary, summary)
+
+    def test_english_only_direction_title_rejected(self):
+        data = output()
+        data["research_directions"][0]["title"] = "CAR-T cell therapy"
+        with self.assertRaises(ValidationError):
+            ReviewContent.model_validate(data)
+
+    def test_english_only_direction_summary_rejected(self):
+        data = output()
+        data["research_directions"][0]["summary"] = "Investigate EGFR mechanisms in lung cancer."
+        with self.assertRaises(ValidationError):
+            ReviewContent.model_validate(data)
+
     def test_too_few_or_many_directions(self):
         for count in (2, 6):
             data = output()
@@ -268,6 +290,7 @@ class ServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(kwargs["timeout"], 60)
         self.assertEqual(kwargs["max_tokens"], 1800)
         self.assertEqual(kwargs["max_retries"], 0)
+        self.assertEqual(kwargs["extra_body"], {"thinking": {"type": "disabled"}})
         model.return_value.bind.assert_called_once_with(response_format={"type": "json_object"})
 
     async def test_missing_key_never_constructs_provider(self):
@@ -301,12 +324,14 @@ class ServiceTests(unittest.IsolatedAsyncioTestCase):
                 await AIReviewService(config(DEEPSEEK_API_KEY="synthetic-secret", AI_REVIEW_TIMEOUT_SECONDS=0.01)).generate("query", self.articles)
 
     async def test_schema_failure_and_hallucinated_evidence_are_safe(self):
-        for change in ("schema", "citation"):
+        for change in ("schema", "citation", "language"):
             data = output()
             if change == "schema":
                 data["research_directions"] = []
-            else:
+            elif change == "citation":
                 data["research_directions"][0]["evidence_pmids"] = ["999"]
+            else:
+                data["research_directions"][0]["summary"] = "English-only model output"
             with patch("app.services.ai_review.ChatOpenAI", fake_model(data)):
                 with self.assertRaises(InvalidAIReview) as caught:
                     await AIReviewService(self.settings).generate("query", self.articles)
@@ -342,6 +367,9 @@ class ServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(requests), 1)
         self.assertEqual(requests[0]["response_format"], {"type": "json_object"})
         self.assertEqual(requests[0]["model"], "deepseek-flash")
+        self.assertEqual(requests[0]["thinking"], {"type": "disabled"})
+        self.assertEqual(requests[0]["temperature"], 0.1)
+        self.assertNotIn("reasoning_effort", requests[0])
         self.assertFalse("tools" in requests[0] or "functions" in requests[0])
 
 
