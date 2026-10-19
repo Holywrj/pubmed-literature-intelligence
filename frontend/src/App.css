@@ -144,7 +144,7 @@
 .workflow h3 { font-size: 13px; font-weight: 550; margin: 8px 0 6px; }
 .workflow p { color: #78836e; font-size: 11px; max-width: 240px; }
 .welcome-note { border-top: 1px solid #e8eee3; padding: 13px 0; display: flex; align-items: center; gap: 9px; font-size: 10px; color: #77856d; }
-.ai-panel { border: 1px solid #d9e0d2; border-radius: 7px; background: #eef1e7; margin: 27px 0 0; padding: 25px 28px; display: flex; align-items: center; gap: 18px; }
+.ai-panel { border: 1px solid #d9e0d2; border-radius: 7px; background: #eef1e7; margin: 24px 0 0; padding: 25px 28px; display: flex; align-items: center; gap: 18px; }
 .ai-symbol { font-size: 34px; color: #829375; line-height: 1; }
 .ai-copy { flex: 1; }
 .ai-heading { display: flex; align-items: center; gap: 12px; }

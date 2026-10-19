@@ -110,6 +110,7 @@ function App() {
           </div>
           {search.total_count === 0 && <div className="empty-result" role="status"><h3>未找到匹配文献</h3><p>请尝试更宽泛的主题、其他拼写方式或相关 MeSH 词。</p></div>}
           {search.total_count > 0 && search.returned_count === 0 && <div className="alert warning-alert"><strong>PubMed 找到了匹配结果，但未能获取可用文献。</strong><p>下方统计分析将基于空样本。请尝试其他检索词。</p></div>}
+          <AIReviewSection canGenerate={!!search.articles.length && !loading} hasSearch={!!search} loading={aiLoading} error={aiError} review={aiReview} onGenerate={handleAIReview} />
           {analysis && <>
             <div className="section-heading analytics-heading"><div><span className="eyebrow">文献分析</span><h2>研究领域文献概览</h2></div><p>基于 {analysis.analyzed_count.toLocaleString()} 篇文献分析</p></div>
             <Suspense fallback={<div className="loading-panel" role="status">正在准备可视化图表…</div>}>
@@ -126,8 +127,6 @@ function App() {
           <ol className="workflow"><li><span>01</span><h3>检索文献</h3><p>从 PubMed 获取真实生物医学文献及 metadata。</p></li><li><span>02</span><h3>分析趋势</h3><p>查看发表趋势、主要期刊和 MeSH 研究热点。</p></li><li><span>03</span><h3>阅读核心文献</h3><p>查看 Abstract，并通过 PMID 跳转至 PubMed 原始记录。</p></li></ol>
           <div className="welcome-note"><span className="status-dot" />实时数据 · 透明分析 · 页面不展示虚构示例结果</div>
         </section>}
-
-        <AIReviewSection canGenerate={!!search?.articles.length && !loading} hasSearch={!!search} loading={aiLoading} error={aiError} review={aiReview} onGenerate={handleAIReview} />
 
         <footer className="site-footer"><span className="footer-brand">PUBMED LITERATURE INTELLIGENCE</span><p>本工具用于文献检索与研究分析，不用于医学诊断或治疗决策。</p><p>若未配置合法的期刊指标数据源，JIF / JCR Quartile 可能显示为暂无数据。</p><span className="footer-note">PubMed metadata · 确定性统计分析 · AI 研究综述</span></footer>
       </main>
