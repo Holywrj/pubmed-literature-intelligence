@@ -211,7 +211,7 @@
   .article-table tr { padding: 18px; border-top: 1px solid #e4ecdd; }
   .article-table td, .article-table td:first-child, .article-table td:last-child { padding: 5px 0; border: 0; min-width: 0; width: 100%; }
   .article-table td[data-label] { display: flex; align-items: baseline; gap: 13px; }
-  .article-table td[data-label]::before { content: attr(data-label); width: 83px; flex-shrink: 0; color: #7f8d76; font-size: 9px; }
+  .article-table td[data-label]::before { content: attr(data-label); width: 100px; flex-shrink: 0; color: #7f8d76; font-size: 9px; }
   .article-table .article-title-cell { padding: 6px 0 13px; }
   .article-table .detail-row { border-top: 0; padding: 0 18px 18px; background: #fbfcf8; }
   .article-table .detail-row td { padding: 0 !important; }

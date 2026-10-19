@@ -4,7 +4,7 @@ import { ChartEmpty, ChartPanel } from './ChartPanel'
 
 export function JournalChart({ journals }: { journals: JournalCount[] }) {
   const data = journals.slice(0, 10).map((item, index) => ({ ...item, position: index + 1 }))
-  return <ChartPanel title="Top Journals" subtitle="Leading journals in the analyzed sample" tag="TOP 10">
+  return <ChartPanel title="主要期刊" subtitle="当前分析样本中的主要期刊" tag="前 10">
     {data.length ? <>
       <div className="journal-chart" style={{ height: Math.max(210, data.length * 39) }}>
         <ol className="journal-labels">{data.map(item => <li key={item.journal} title={item.journal}><span>{item.journal}</span></li>)}</ol>
@@ -13,11 +13,11 @@ export function JournalChart({ journals }: { journals: JournalCount[] }) {
             <XAxis type="number" hide domain={[0, 'dataMax']} allowDecimals={false} />
             <YAxis type="category" dataKey="journal" hide />
             <Tooltip cursor={{ fill: '#f2f6f4' }} />
-            <Bar dataKey="count" name="Articles" fill="#43988b" radius={[0, 4, 4, 0]} barSize={11} isAnimationActive={false} label={{ position: 'right', fontSize: 11, fill: '#4f6560' }} />
+            <Bar dataKey="count" name="文献" fill="#43988b" radius={[0, 4, 4, 0]} barSize={11} isAnimationActive={false} label={{ position: 'right', fontSize: 11, fill: '#4f6560' }} />
           </BarChart>
         </ResponsiveContainer></div>
       </div>
-      <details className="chart-data"><summary>View journal counts</summary><ul>{data.map(item => <li key={item.journal}>{item.journal}: {item.count}</li>)}</ul></details>
-    </> : <ChartEmpty>No journal names are available for these articles.</ChartEmpty>}
+      <details className="chart-data"><summary>查看期刊文献数量</summary><ul>{data.map(item => <li key={item.journal}>{item.journal}：{item.count} 篇</li>)}</ul></details>
+    </> : <ChartEmpty>暂无可用的期刊名称。</ChartEmpty>}
   </ChartPanel>
 }

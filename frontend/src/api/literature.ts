@@ -3,7 +3,17 @@ import type { AIReviewResponse, AnalysisResponse, PubMedArticle, SearchResponse 
 function detailMessage(body: unknown): string | undefined {
   if (typeof body !== 'object' || body === null || !('detail' in body)) return
   const detail = body.detail
-  if (typeof detail === 'string') return detail
+  if (typeof detail === 'string') {
+    const localized: Record<string, string> = {
+      'PubMed service is temporarily unavailable. Please try again later.': 'PubMed 服务暂时不可用，请稍后重试。',
+      'AI review is not configured.': 'AI 综述服务尚未完成配置。',
+      'No abstracts are available for AI review.': '当前没有可用于 AI 综述的 Abstract。',
+      'No abstracts fit within the AI review context limit.': '当前文献 Abstract 超出 AI 综述的上下文长度限制。',
+      'AI review service is temporarily unavailable. Please try again.': 'AI 综述服务暂时不可用，请稍后重试。',
+      'AI review returned an invalid response. Please try again.': 'AI 综述返回的内容无效，请重试。',
+    }
+    return localized[detail] ?? '请求未能完成，请稍后重试。'
+  }
   if (Array.isArray(detail)) {
     const messages = detail.flatMap((item: unknown) => {
       if (typeof item === 'object' && item !== null && 'msg' in item && typeof item.msg === 'string') {
@@ -11,7 +21,7 @@ function detailMessage(body: unknown): string | undefined {
       }
       return []
     })
-    return messages.join(' · ') || undefined
+    return messages.length ? '请求内容不符合要求，请检查输入后重试。' : undefined
   }
 }
 
@@ -33,17 +43,17 @@ async function post<T>(path: string, body: unknown, signal?: AbortSignal): Promi
       throw new Error(detailMessage(payload) ?? (
         response.status === 503
           ? path === '/api/ai-review'
-            ? 'AI review service is temporarily unavailable. Please try again.'
-            : 'PubMed is temporarily unavailable. Please try again later.'
-          : `The request could not be completed (HTTP ${response.status}). Please try again.`
+            ? 'AI 综述服务暂时不可用，请稍后重试。'
+            : 'PubMed 服务暂时不可用，请稍后重试。'
+          : `请求未能完成（HTTP ${response.status}），请稍后重试。`
       ))
     }
-    if (payload === null) throw new Error('The server returned an empty or unreadable response.')
+    if (payload === null) throw new Error('服务器返回的响应为空或无法读取。')
     return payload as T
   } catch (error) {
-    if (controller.signal.aborted) throw new Error('The request timed out. Please try again.')
+    if (controller.signal.aborted) throw new Error('请求超时，请重试。')
     if (error instanceof TypeError) {
-      throw new Error('Cannot connect to the backend. Check that the backend is running and try again.')
+      throw new Error('无法连接到后端服务，请确认服务正在运行后重试。')
     }
     throw error
   } finally {
