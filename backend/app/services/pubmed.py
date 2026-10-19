@@ -75,6 +75,7 @@ class PubMedClient:
             params={
                 **self._common_params(),
                 "term": query,
+                "sort": "relevance",
                 "retmode": "json",
                 "retmax": limit,
             },
