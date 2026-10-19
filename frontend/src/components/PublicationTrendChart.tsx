@@ -3,7 +3,7 @@ import { ChartEmpty, ChartPanel } from './ChartPanel'
 
 export function PublicationTrendChart({ distribution }: { distribution: Record<string, number> }) {
   const data = Object.entries(distribution).map(([year, count]) => ({ year: Number(year), count })).sort((a, b) => a.year - b.year)
-  return <ChartPanel title="Publication Trend" subtitle="Publication years of analyzed articles" tag="YEARLY">
+  return <ChartPanel title="发表趋势" subtitle="当前分析文献的发表年份" tag="按年">
     {data.length ? <>
       <div className="chart-surface">
         <ResponsiveContainer width="100%" height="100%">
@@ -11,12 +11,12 @@ export function PublicationTrendChart({ distribution }: { distribution: Record<s
             <CartesianGrid vertical={false} stroke="#e7ecea" strokeDasharray="3 4" />
             <XAxis dataKey="year" tickLine={false} axisLine={false} minTickGap={22} tick={{ fontSize: 11, fill: '#637471' }} />
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#637471' }} />
-            <Tooltip labelFormatter={label => `Publication year: ${label}`} />
-            <Area type="linear" dataKey="count" name="Articles" stroke="#16766b" strokeWidth={2.5} fill="#dceee7" isAnimationActive={false} dot={data.length === 1} />
+            <Tooltip labelFormatter={label => `发表年份：${label}`} />
+            <Area type="linear" dataKey="count" name="文献" stroke="#16766b" strokeWidth={2.5} fill="#dceee7" isAnimationActive={false} dot={data.length === 1} />
           </AreaChart>
         </ResponsiveContainer>
       </div>
-      <details className="chart-data"><summary>View publication counts</summary><ul>{data.map(item => <li key={item.year}>{item.year}: {item.count} articles</li>)}</ul></details>
-    </> : <ChartEmpty>No publication-year data is available for these articles.</ChartEmpty>}
+      <details className="chart-data"><summary>查看各年份文献数量</summary><ul>{data.map(item => <li key={item.year}>{item.year}：{item.count} 篇</li>)}</ul></details>
+    </> : <ChartEmpty>暂无可用的发表年份数据。</ChartEmpty>}
   </ChartPanel>
 }

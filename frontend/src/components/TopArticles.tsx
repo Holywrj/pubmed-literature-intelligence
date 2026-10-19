@@ -11,31 +11,31 @@ export function TopArticles({ ranked, retrieved, yearStart, yearEnd }: {
   const isRanked = ranked !== undefined
   const rows: ArticleRow[] = ranked ?? (retrieved ?? []).map(article => ({ article }))
   return <section className="panel articles-panel" aria-labelledby={`${id}-title`}>
-    <div className="panel-header"><div><h3 id={`${id}-title`}>{isRanked ? 'Top Articles' : 'Retrieved Articles'}</h3>
-      <p>{isRanked ? `Up to 100 articles from ${yearStart}–${yearEnd}, ranked by publishing journal JIF, then year and PMID.` : 'Search results are preserved. Analysis and ranking are unavailable.'}</p>
-    </div><span className="panel-tag">{rows.length} ARTICLES</span></div>
-    {isRanked && <p className="ranking-note">Journal JIF describes the publishing journal, not the impact or quality of an individual article. Articles without JIF follow those with JIF.</p>}
-    {!rows.length ? <div className="article-empty">{isRanked ? 'No articles fall within the recent five-year window.' : 'No articles were retrieved.'}</div> :
+    <div className="panel-header"><div><h3 id={`${id}-title`}>{isRanked ? 'Top 文献' : '检索文献'}</h3>
+      <p>{isRanked ? `近五年（${yearStart}–${yearEnd}）最多 100 篇文献，按期刊 JIF、年份和 PMID 排序。` : '已保留检索结果；统计分析和文献排名暂不可用。'}</p>
+    </div><span className="panel-tag">{rows.length} 篇文献</span></div>
+    {isRanked && <p className="ranking-note">Journal JIF 反映期刊指标，并不代表单篇文献的影响力或质量。没有 JIF 的文献排在有 JIF 的文献之后。</p>}
+    {!rows.length ? <div className="article-empty">{isRanked ? '近五年范围内暂无文献。' : '暂无已获取的文献。'}</div> :
       <div className="article-table-wrap"><table className="article-table">
-        <caption className="sr-only">{isRanked ? 'Recent articles ranked by journal metrics' : 'Retrieved PubMed articles'}</caption>
-        <thead><tr><th scope="col">Rank</th><th scope="col">Article / Authors</th><th scope="col">Year</th><th scope="col">Journal</th><th scope="col">Journal JIF</th><th scope="col">JCR Quartile</th><th scope="col">PubMed</th></tr></thead>
+        <caption className="sr-only">{isRanked ? '按期刊指标排序的近期文献' : '已检索的 PubMed 文献'}</caption>
+        <thead><tr><th scope="col">排名</th><th scope="col">论文 / 作者</th><th scope="col">年份</th><th scope="col">期刊</th><th scope="col">Journal JIF</th><th scope="col">JCR Quartile</th><th scope="col">PubMed</th></tr></thead>
         <tbody>{rows.map(({ article, journal_metrics: metric }, index) => <Fragment key={`${article.pmid}-${index}`}>
           <tr className={expanded === index ? 'is-expanded' : ''}>
-            <td className="rank-cell" data-label="Rank">{isRanked ? String(index + 1).padStart(2, '0') : '—'}</td>
+            <td className="rank-cell" data-label="排名">{isRanked ? String(index + 1).padStart(2, '0') : '—'}</td>
             <td className="article-title-cell"><button className="article-title" type="button" aria-expanded={expanded === index} aria-controls={`${id}-${index}`} onClick={() => setExpanded(expanded === index ? null : index)}>{article.title}</button>
-              <p className="authors-preview">{article.authors.length ? article.authors.slice(0, 3).join(', ') + (article.authors.length > 3 ? ' et al.' : '') : 'Authors unavailable'}</p>
-              <button type="button" className="details-toggle" aria-expanded={expanded === index} aria-controls={`${id}-${index}`} onClick={() => setExpanded(expanded === index ? null : index)}>{expanded === index ? 'Hide details −' : 'View details +'}</button></td>
-            <td data-label="Year">{article.publication_year ?? 'N/A'}</td>
-            <td className="journal-cell" data-label="Journal">{article.journal || 'Unknown journal'}</td>
+              <p className="authors-preview">{article.authors.length ? article.authors.slice(0, 3).join(', ') + (article.authors.length > 3 ? ' 等' : '') : '作者信息暂无'}</p>
+              <button type="button" className="details-toggle" aria-expanded={expanded === index} aria-controls={`${id}-${index}`} onClick={() => setExpanded(expanded === index ? null : index)}>{expanded === index ? '收起详情 −' : '查看详情 +'}</button></td>
+            <td data-label="年份">{article.publication_year ?? 'N/A'}</td>
+            <td className="journal-cell" data-label="期刊">{article.journal || '未知期刊'}</td>
             <td className="jif-cell" data-label="Journal JIF">{metric?.journal_jif != null ? metric.journal_jif.toLocaleString(undefined, { maximumFractionDigits: 2 }) : 'N/A'}</td>
-            <td data-label="JCR Quartile"><span className={`quartile-badge${metric?.best_jcr_quartile ? ' available' : ''}`}>{metric?.best_jcr_quartile ?? 'Unknown'}</span></td>
-            <td data-label="PubMed"><a className="pubmed-link" href={`https://pubmed.ncbi.nlm.nih.gov/${encodeURIComponent(article.pmid)}/`} target="_blank" rel="noopener noreferrer" aria-label={`PMID ${article.pmid} on PubMed (opens in a new tab)`}>{article.pmid} <span aria-hidden="true">↗</span></a></td>
+            <td data-label="JCR Quartile"><span className={`quartile-badge${metric?.best_jcr_quartile ? ' available' : ''}`}>{metric?.best_jcr_quartile ?? '暂无'}</span></td>
+            <td data-label="PubMed"><a className="pubmed-link" href={`https://pubmed.ncbi.nlm.nih.gov/${encodeURIComponent(article.pmid)}/`} target="_blank" rel="noopener noreferrer" aria-label={`PMID ${article.pmid}，在 PubMed 查看（在新标签页打开）`}>{article.pmid} <span aria-hidden="true">↗</span></a></td>
           </tr>
           <tr className="detail-row" hidden={expanded !== index}><td colSpan={7}><div className="article-detail" id={`${id}-${index}`}>
-            <h4>Abstract</h4><p className="abstract-text">{article.abstract || 'No abstract is available for this article.'}</p>
-            <h4>Authors</h4><p>{article.authors.join(', ') || 'Authors unavailable'}</p>
-            <h4>MeSH terms</h4><div className="detail-terms">{article.mesh_terms.length ? article.mesh_terms.map(term => <span key={term}>{term}</span>) : 'No MeSH terms available'}</div>
-            <p className="article-identifiers">ISSN: {article.issn || 'N/A'} <span>PMID: {article.pmid}</span>{metric?.metric_year != null && <span>Metric year: {metric.metric_year}</span>}</p>
+            <h4>Abstract</h4><p className="abstract-text">{article.abstract || '该文献暂无 Abstract。'}</p>
+            <h4>作者</h4><p>{article.authors.join(', ') || '作者信息暂无'}</p>
+            <h4>MeSH terms</h4><div className="detail-terms">{article.mesh_terms.length ? article.mesh_terms.map(term => <span key={term}>{term}</span>) : '暂无 MeSH terms'}</div>
+            <p className="article-identifiers">ISSN: {article.issn || 'N/A'} <span>PMID: {article.pmid}</span>{metric?.metric_year != null && <span>指标年份：{metric.metric_year}</span>}</p>
           </div></td></tr>
         </Fragment>)}</tbody>
       </table></div>}
