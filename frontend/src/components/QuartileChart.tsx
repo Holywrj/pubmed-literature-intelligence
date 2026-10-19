@@ -12,7 +12,7 @@ export function QuartileChart({ metrics }: { metrics: JournalMetricsSummary }) {
   return <ChartPanel title="JCR Quartile 分布" subtitle="当前分析文献对应期刊的最佳分区" tag="期刊指标">
     {total ? <>
       {unknownOnly && <p className="metrics-notice">{metrics.articles_with_metrics === 0
-        ? '当前数据集暂无 JCR 指标，页面不会虚构任何数值。'
+        ? '当前数据集暂无 JIF / JCR Quartile 数据，页面不会虚构任何数值。'
         : '当前数据集暂无 JCR Quartile 数据，已有 JIF 数值将在其他位置单独展示。'}</p>}
       <div className="chart-surface quartile-surface"><ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ top: 18, left: -20, right: 8, bottom: 0 }} accessibilityLayer>
